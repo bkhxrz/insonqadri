@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inson Qadri Production - Bold Cinematic Design System
+   Black & White theme with dramatic film aesthetics
+   All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Core cinematic palette - Pure black and white */
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 100%;
+
+    --radius: 0.25rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 0 0% 100%;
+
+    /* Custom cinematic effects */
+    --film-grain: 0 0% 50%;
+    --overlay-dark: 0 0% 0%;
+    --overlay-light: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 100%;
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Cinematic typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Film grain overlay effect */
+  .film-grain {
+    position: relative;
+  }
+  
+  .film-grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* Cinematic vignette */
+  .vignette {
+    box-shadow: inset 0 0 150px 60px hsl(var(--overlay-dark) / 0.6);
+  }
+
+  /* Smooth scroll behavior */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+
+  /* Cinematic text shadow */
+  .text-cinematic {
+    text-shadow: 0 2px 20px hsl(var(--overlay-dark) / 0.5);
+  }
+
+  /* Video overlay gradient */
+  .video-overlay {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--overlay-dark) / 0.3) 0%,
+      hsl(var(--overlay-dark) / 0.6) 50%,
+      hsl(var(--overlay-dark) / 0.9) 100%
+    );
+  }
+
+  /* Section divider */
+  .section-divider {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--border)) 50%,
+      transparent 100%
+    );
+    height: 1px;
+  }
+}
+
+@layer components {
+  /* Cinematic button styles */
+  .btn-cinematic {
+    @apply relative overflow-hidden border border-foreground bg-transparent text-foreground 
+           px-8 py-3 uppercase tracking-widest text-sm font-medium
+           transition-all duration-300 ease-out;
+  }
+
+  .btn-cinematic:hover {
+    @apply bg-foreground text-background;
+  }
+
+  .btn-cinematic::before {
+    content: '';
+    @apply absolute inset-0 bg-foreground transform -translate-x-full transition-transform duration-300;
+    z-index: -1;
+  }
+
+  .btn-cinematic:hover::before {
+    @apply translate-x-0;
+  }
+
+  /* Navigation link animation */
+  .nav-link {
+    @apply relative text-foreground/80 hover:text-foreground transition-colors duration-300;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-px bg-foreground transform scale-x-0 origin-left transition-transform duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply scale-x-100;
+  }
+
+  /* Card hover effect */
+  .card-cinematic {
+    @apply bg-card border border-border/50 transition-all duration-500;
+  }
+
+  .card-cinematic:hover {
+    @apply border-foreground/30 shadow-2xl;
+    transform: translateY(-4px);
+  }
+}
