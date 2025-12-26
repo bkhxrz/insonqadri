@@ -17,7 +17,7 @@ const translations: Translations = {
   'nav.contact': { uz: "Bog'lanish", ru: 'Контакты' },
 
   // Home page
-  'home.tagline': { uz: 'Video prodakshn studiyasi', ru: 'Студия видеопроизводства' },
+  'home.tagline': { uz: 'Barchasidan ustun', ru: 'Студия видеопроизводства' },
   'home.subtitle': { uz: "Biz sizning fikringizni insonlar qalbiga yetkazamiz", ru: 'Мы доносим ваши идеи до сердец людей' },
   'home.cta': { uz: "Ishlarimizni ko'ring", ru: 'Смотреть работы' },
   'home.featured': { uz: 'Tanlangan ishlar', ru: 'Избранные работы' },

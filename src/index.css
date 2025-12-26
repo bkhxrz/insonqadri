@@ -165,6 +165,35 @@
     );
     height: 1px;
   }
+
+  /* CSS-only marquee for featured works */
+  .marquee {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .marquee-track {
+    display: flex;
+    align-items: stretch;
+    gap: 1.5rem;
+    animation: marquee linear infinite;
+    will-change: transform;
+  }
+
+  .marquee-track > * {
+    flex: 0 0 auto;
+  }
+
+  .marquee:hover .marquee-track,
+  .marquee:active .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    /* move by the exact block width (set via --marquee-step in px) */
+    to { transform: translateX(calc(var(--marquee-step) * -1)); }
+  }
 }
 
 @layer components {

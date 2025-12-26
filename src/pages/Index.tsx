@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom';
 import { ArrowDown, Play, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import logo from '@/assets/logo.png';
+import content1 from '@/assets/content-1.jpg';
+import content2 from '@/assets/content-2.jpg';
+import content3 from '@/assets/content-3.jpg';
+import content4 from '@/assets/content-4.jpg';
+import content5 from '@/assets/content-5.jpg';
+import content6 from '@/assets/content-6.jpg';
+import content7 from '@/assets/content-7.jpg';
 
 const Index: React.FC = () => {
   const { t } = useLanguage();
@@ -22,30 +29,58 @@ const Index: React.FC = () => {
     contentSection?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Sample featured works (placeholder for now)
+  // Featured works - using 7 local content images
   const featuredWorks = [
-    {
-      id: 1,
-      title: 'Reklama loyihasi',
-      titleRu: 'Рекламный проект',
-      type: 'Instagram',
-      thumbnail: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop',
-    },
-    {
-      id: 2,
-      title: 'Ijtimoiy kontent',
-      titleRu: 'Социальный контент',
-      type: 'YouTube',
-      thumbnail: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&h=400&fit=crop',
-    },
-    {
-      id: 3,
-      title: 'Brend video',
-      titleRu: 'Брендовое видео',
-      type: 'Commercial',
-      thumbnail: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=600&h=400&fit=crop',
-    },
+    { id: 1, title: 'Reklama loyihasi', titleRu: 'Рекламный проект', type: 'Instagram', thumbnail: content1 },
+    { id: 2, title: 'Ijtimoiy kontent', titleRu: 'Социальный контент', type: 'YouTube', thumbnail: content2 },
+    { id: 3, title: 'Brend video', titleRu: 'Брендовое видео', type: 'Commercial', thumbnail: content3 },
+    { id: 4, title: 'Brend foto', titleRu: 'Брендовое фото', type: 'Photoshoot', thumbnail: content4 },
+    { id: 5, title: 'Produktsiya', titleRu: 'Продакшн', type: 'Commercial', thumbnail: content5 },
+    { id: 6, title: 'Tabiat videolari', titleRu: 'Природные видео', type: 'Documentary', thumbnail: content6 },
+    { id: 7, title: 'Ijtimoiy kampaniya', titleRu: 'Социальная кампания', type: 'Campaign', thumbnail: content7 },
   ];
+
+  // CSS-only marquee (no JS): duplicated items in markup and a CSS animation
+  const MARQUEE_DURATION = 14; // seconds — slightly slower loop
+  const marqueeRef = useRef<HTMLDivElement | null>(null);
+  const [multiplier, setMultiplier] = useState(1);
+  const [stepWidth, setStepWidth] = useState(0);
+
+  // Ensure the original item block is at least as wide as the viewport so the animation step equals that block width
+  useEffect(() => {
+    const adjust = () => {
+      const m = marqueeRef.current;
+      if (!m) return;
+      const items = Array.from(m.querySelectorAll('.marquee-item')) as HTMLElement[];
+      if (items.length === 0) return;
+
+      const setCount = featuredWorks.length;
+      if (items.length < setCount) return; // wait until at least one set is rendered
+
+      const first = items[0];
+      const lastInSet = items[setCount - 1];
+      const setLeft = first.offsetLeft;
+      const setRight = lastInSet.offsetLeft + lastInSet.offsetWidth;
+      const setWidth = setRight - setLeft;
+      const containerWidth = (m.parentElement as HTMLElement)?.clientWidth ?? m.clientWidth;
+
+      if (setWidth === 0 || containerWidth === 0) return;
+
+      // needed sets so that one block is wider than the container (plus one extra for seam)
+      const needed = Math.max(1, Math.ceil(containerWidth / setWidth) + 1);
+      if (needed !== multiplier) setMultiplier(needed);
+
+      if (Math.abs(setWidth - stepWidth) > 1) {
+        setStepWidth(setWidth);
+        m.style.setProperty('--marquee-step', `${setWidth}px`);
+      }
+    };
+
+    // Run on next frame after render
+    const id = window.requestAnimationFrame(adjust);
+    window.addEventListener('resize', adjust);
+    return () => { window.cancelAnimationFrame(id); window.removeEventListener('resize', adjust); };
+  }, [featuredWorks, multiplier, stepWidth]);
 
   return (
     <main className="min-h-screen bg-background">
@@ -166,37 +201,62 @@ const Index: React.FC = () => {
             </Link>
           </div>
 
-          {/* Works Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredWorks.map((work, index) => (
-              <Link
-                key={work.id}
-                to="/works"
-                className="card-cinematic group overflow-hidden animate-fade-in"
-                style={{ animationDelay: `${0.2 + index * 0.1}s` }}
-              >
-                <div className="relative aspect-video overflow-hidden">
-                  <img
-                    src={work.thumbnail}
-                    alt={work.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="w-16 h-16 border-2 border-foreground rounded-full flex items-center justify-center">
-                      <Play size={24} className="ml-1" />
+          {/* Works — CSS-only marquee */}
+          <div className="relative">
+            <div className="marquee overflow-hidden py-8">
+              <div ref={marqueeRef} className="marquee-track flex gap-4 items-stretch" style={{ animationDuration: `${MARQUEE_DURATION}s` }}>
+                {Array.from({ length: multiplier }).flatMap((_, mi) =>
+                  featuredWorks.map((work) => (
+                    <div key={`m-${mi}-${work.id}`} className="marquee-item min-w-[10rem] sm:min-w-[12rem]">
+                      <Link
+                        to="/works"
+                        aria-label={work.title}
+                        className="card-cinematic group overflow-hidden rounded-2xl animate-fade-in h-full flex flex-col shadow-sm"
+                      >
+                        <div className="relative w-full aspect-[3/4] overflow-hidden">
+                          <img
+                            src={work.thumbnail}
+                            alt={work.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-background/15 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                            <div className="w-9 h-9 border-2 border-foreground rounded-full flex items-center justify-center bg-white/10">
+                              <Play size={14} />
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
                     </div>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground">
-                    {work.type}
-                  </span>
-                  <h3 className="font-display text-xl tracking-wide mt-1">
-                    {work.title}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+                  ))
+                )}
+
+                {/* duplicate block to create seamless loop */}
+                {Array.from({ length: multiplier }).flatMap((_, mi) =>
+                  featuredWorks.map((work) => (
+                    <div key={`m-dup-${mi}-${work.id}`} className="marquee-item min-w-[10rem] sm:min-w-[12rem]">
+                      <Link
+                        to="/works"
+                        aria-label={work.title}
+                        className="card-cinematic group overflow-hidden rounded-2xl animate-fade-in h-full flex flex-col shadow-sm"
+                      >
+                        <div className="relative w-full aspect-[3/4] overflow-hidden">
+                          <img
+                            src={work.thumbnail}
+                            alt={work.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-background/15 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                            <div className="w-9 h-9 border-2 border-foreground rounded-full flex items-center justify-center bg-white/10">
+                              <Play size={14} />
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </section>
